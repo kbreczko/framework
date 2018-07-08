@@ -65,7 +65,7 @@ public class ApplicationContextImpl implements ApplicationContext {
         EntityManagerFactory entityManagerFactory = (EntityManagerFactory) ClassUtil.invokeMethod(configuration, method);
         EntityManagerHelper entityManagerHelper = new EntityManagerHelper(entityManagerFactory);
         EntityManagerHandler entityManagerHandler = new EntityManagerHandler(entityManagerHelper);
-        return Proxy.newProxyInstance(EntityManager.class.getClassLoader(), EntityManager.class.getInterfaces(), entityManagerHandler);
+        return Proxy.newProxyInstance(EntityManager.class.getClassLoader(), new Class[]{EntityManager.class}, entityManagerHandler);
     }
 
     @Override

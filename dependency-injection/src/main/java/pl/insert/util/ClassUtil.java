@@ -29,6 +29,7 @@ public class ClassUtil {
     public static <T> void setField(Field field, Object obj, T value) {
         field.setAccessible(true);
         try {
+            field.setAccessible(true);
             field.set(obj, value);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
