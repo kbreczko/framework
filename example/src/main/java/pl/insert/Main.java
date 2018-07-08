@@ -5,12 +5,13 @@ import pl.insert.services.UserDetailsService;
 import pl.insert.services.UserDetailsServiceImpl;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
 
 public class Main {
 
     public static void main(String[] args) {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("database");
+        ApplicationContext context = new ApplicationContextImpl(AppConfiguration.class);
+        EntityManagerFactory entityManagerFactory = context.getBean(EntityManagerFactory.class);
         UserDetailsService userDetailsService = new UserDetailsServiceImpl(entityManagerFactory);
         UserDetails userDetails = new UserDetails("Name");
         userDetailsService.save(userDetails);
