@@ -1,37 +1,31 @@
 package pl.insert.services;
 
+import pl.insert.adnotations.Inject;
+import pl.insert.adnotations.components.Service;
 import pl.insert.models.UserDetails;
 import pl.insert.repositories.UserDetailsRepository;
-import pl.insert.repositories.UserDetailsRepositoryImpl;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
+
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private EntityManagerFactory entityManagerFactory;
+    @Inject
+    private EntityManager entityManager;
 
-    public UserDetailsServiceImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+    @Inject
+    private UserDetailsRepository userDetailsRepository;
 
     public void save(UserDetails userDetails) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-
-        UserDetailsRepository userDetailsRepository = new UserDetailsRepositoryImpl(entityManager);
         userDetailsRepository.save(userDetails);
-
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
     public UserDetails findById(long id) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-
-        UserDetailsRepository userDetailsRepository = new UserDetailsRepositoryImpl(entityManager);
         UserDetails userDetails = userDetailsRepository.findById(id);
-
         entityManager.getTransaction().commit();
         entityManager.close();
 
