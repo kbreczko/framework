@@ -7,15 +7,16 @@ import pl.insert.adnotations.Inject;
 import pl.insert.adnotations.PersistenceContext;
 import pl.insert.adnotations.components.Repository;
 import pl.insert.adnotations.components.Service;
-import pl.insert.entitymanager.EntityManagerHandler;
 import pl.insert.entitymanager.EntityManagerHelper;
+import pl.insert.proxy.AOPInterceptorAdapter;
+import pl.insert.proxy.DynamicProxyFactory;
+import pl.insert.proxy.DynamicProxyFactoryImpl;
 import pl.insert.util.ClassUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.*;
 
 public class ApplicationContextImpl implements ApplicationContext {
@@ -86,10 +87,11 @@ public class ApplicationContextImpl implements ApplicationContext {
 
     private Object createEntityManagerBean() {
         Method method = beans.get(EntityManagerFactory.class);
+
+        DynamicProxyFactory dynamicProxyFactory = new DynamicProxyFactoryImpl();
         EntityManagerFactory entityManagerFactory = (EntityManagerFactory) ClassUtil.invokeMethod(appConfiguration.get(), method);
         EntityManagerHelper entityManagerHelper = new EntityManagerHelper(entityManagerFactory);
-        EntityManagerHandler entityManagerHandler = new EntityManagerHandler(entityManagerHelper);
-        return Proxy.newProxyInstance(EntityManager.class.getClassLoader(), new Class[]{EntityManager.class}, entityManagerHandler);
+        return dynamicProxyFactory.createProxy(EntityManager.class, entityManagerHelper, new AOPInterceptorAdapter());
     }
 
     private void injectDependencies(Object implementation) {
