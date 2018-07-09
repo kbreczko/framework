@@ -7,7 +7,9 @@ import pl.insert.adnotations.Inject;
 import pl.insert.adnotations.PersistenceContext;
 import pl.insert.adnotations.components.Repository;
 import pl.insert.adnotations.components.Service;
-import pl.insert.entitymanager.EntityManagerHelper;
+import pl.insert.adnotations.transactional.Transactional;
+import pl.insert.entitymanager.EntityManagerUnit;
+import pl.insert.entitymanager.EntityManagerUnitImpl;
 import pl.insert.proxy.AOPInterceptorAdapter;
 import pl.insert.proxy.DynamicProxyFactory;
 import pl.insert.proxy.DynamicProxyFactoryImpl;
@@ -15,6 +17,7 @@ import pl.insert.util.ClassUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -60,20 +63,50 @@ public class ApplicationContextImpl implements ApplicationContext {
 
         Optional<Object> implementationClass = Optional.empty();
 
-        if (clazz.isAssignableFrom(EntityManager.class) && beans.containsKey(EntityManagerFactory.class)) {
+        if (clazz.isAssignableFrom(EntityManager.class) && beans.containsKey(EntityManagerFactory.class))
             implementationClass = Optional.of(createEntityManagerBean());
-        } else if (beans.containsKey(clazz) && appConfiguration.isPresent()) {
+        else if (beans.containsKey(clazz) && appConfiguration.isPresent())
             implementationClass = Optional.of(createBeanFromConfiguration(clazz));
-        } else if (components.containsKey(clazz) && appConfiguration.isPresent()) {
+        else if (components.containsKey(clazz) && appConfiguration.isPresent())
             implementationClass = Optional.of(createBeanFromComponents(clazz));
-        }
 
         implementationClass.orElseThrow(() -> new NullPointerException("No bean named '" + clazz.getName() + "' is defined"));
         Object bean = implementationClass.get();
+        createProxy(bean);
         injectDependencies(bean);
         addToApplicationScope(clazz, bean);
         return (T) bean;
     }
+
+    private Object createProxy(Object bean) {
+        if (isTransactional(bean)) {
+            DynamicProxyFactory dynamicProxyFactory = new DynamicProxyFactoryImpl();
+            EntityManagerUnit entityManagerUnit = getBean(EntityManagerUnit.class);
+            return dynamicProxyFactory.createProxy(EntityManager.class, entityManagerUnit, new AOPInterceptorAdapter()); //TODO:co w przypadku gdy metoda nie jest transakcyjna
+        }
+
+        return bean;
+    }
+
+    private boolean isTransactional(Object bean) {
+        Set<Annotation> annotations = new HashSet<>(Arrays.asList(bean.getClass().getAnnotations()));
+        Arrays.asList(bean.getClass().getMethods()).forEach(method -> annotations.addAll(Arrays.asList(method.getAnnotations())));
+        return annotations.contains(Transactional.class);
+    }
+
+//    private void createProxy(Object bean) {
+//        Set<Annotation> annotations = new HashSet<>(Arrays.asList(bean.getClass().getAnnotations()));
+//        Arrays.asList(bean.getClass().getMethods()).forEach(method -> annotations.addAll(Arrays.asList(method.getAnnotations())));
+//        Object proxy = bean;
+//        for (Map.Entry<Class, Object> entry : proxies.entrySet())
+//        {
+//            System.out.println(entry.getKey() + "/" + entry.getValue());
+//        }
+//        proxies.fo
+//        proxies.forEach((annotation, handler) -> {
+//            proxy =
+//        });
+//    }
 
     private <T> Object createBeanFromComponents(Class<T> clazz) {
         Class component = components.get(clazz);
@@ -86,12 +119,11 @@ public class ApplicationContextImpl implements ApplicationContext {
     }
 
     private Object createEntityManagerBean() {
-        Method method = beans.get(EntityManagerFactory.class);
-
         DynamicProxyFactory dynamicProxyFactory = new DynamicProxyFactoryImpl();
-        EntityManagerFactory entityManagerFactory = (EntityManagerFactory) ClassUtil.invokeMethod(appConfiguration.get(), method);
-        EntityManagerHelper entityManagerHelper = new EntityManagerHelper(entityManagerFactory);
-        return dynamicProxyFactory.createProxy(EntityManager.class, entityManagerHelper, new AOPInterceptorAdapter());
+        EntityManagerFactory entityManagerFactory = getBean(EntityManagerFactory.class);
+        EntityManagerUnit entityManagerUnit = new EntityManagerUnitImpl(entityManagerFactory);
+        applicationScope.put(EntityManagerUnit.class, entityManagerUnit); //TODO: zmienic to
+        return dynamicProxyFactory.createProxy(EntityManager.class, entityManagerUnit, new AOPInterceptorAdapter());
     }
 
     private void injectDependencies(Object implementation) {
@@ -103,7 +135,6 @@ public class ApplicationContextImpl implements ApplicationContext {
     private boolean isDependencyInjectionAnnotation(Field field) {
         return field.isAnnotationPresent(Inject.class) || field.isAnnotationPresent(PersistenceContext.class);
     }
-
 
     private void addToApplicationScope(Class<?> type, Object object) {
         Arrays.stream(object.getClass().getInterfaces()).forEach(iface -> applicationScope.put(iface, object));

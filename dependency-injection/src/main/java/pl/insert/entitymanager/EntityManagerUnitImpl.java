@@ -4,12 +4,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.function.Supplier;
 
-public class EntityManagerHelper implements Supplier<EntityManager> {
+public class EntityManagerUnitImpl implements Supplier<EntityManager>, EntityManagerUnit {
 
     private final ThreadLocal<EntityManager> entityManagerThreadLocal = new ThreadLocal<>();
     private EntityManagerFactory entityManagerFactory;
 
-    public EntityManagerHelper(EntityManagerFactory entityManagerFactory) {
+    public EntityManagerUnitImpl(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
 
@@ -20,6 +20,18 @@ public class EntityManagerHelper implements Supplier<EntityManager> {
             entityManager = getEntityManagerFactory().createEntityManager();
             entityManagerThreadLocal.set(entityManager);
         }
+        return entityManager;
+    }
+
+    @Override
+    public void set(EntityManager entityManager) {
+        entityManagerThreadLocal.set(entityManager);
+    }
+
+    @Override
+    public EntityManager createNewEntityManager() {
+        EntityManager entityManager = getEntityManagerFactory().createEntityManager();
+        entityManagerThreadLocal.set(entityManager);
         return entityManager;
     }
 
