@@ -2,6 +2,7 @@ package pl.insert;
 
 import org.reflections.Reflections;
 import pl.insert.adnotations.Bean;
+import pl.insert.adnotations.ComponentScan;
 import pl.insert.adnotations.Inject;
 import pl.insert.adnotations.PersistenceContext;
 import pl.insert.adnotations.components.Repository;
@@ -18,21 +19,10 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 
 public class ApplicationContextImpl implements ApplicationContext {
-    private static Map<Class, Class> components = new HashMap<>();
+    private Map<Class, Class> components = new HashMap<>();
     private Map<Class, Object> applicationScope = new HashMap<>();
     private Map<Class, Method> beans = new HashMap<>();
     private Optional<Object> appConfiguration = Optional.empty();
-
-    static {
-        Reflections reflections = new Reflections("");
-        Set<Class<?>> types = reflections.getTypesAnnotatedWith(Service.class);
-        types.addAll(reflections.getTypesAnnotatedWith(Repository.class));
-
-        types.forEach(type -> {
-            Arrays.stream(type.getInterfaces()).forEach(iface -> components.put(iface, type));
-            components.put(type, type);
-        });
-    }
 
     public ApplicationContextImpl() {
     }
@@ -40,12 +30,26 @@ public class ApplicationContextImpl implements ApplicationContext {
     public ApplicationContextImpl(Class<?> appConfiguration) {
         this.appConfiguration = Optional.ofNullable(ClassUtil.newInstance(appConfiguration));
 
+        if (appConfiguration.isAnnotationPresent(ComponentScan.class))
+            scanComponents(appConfiguration.getAnnotation(ComponentScan.class).value());
+
         Arrays.stream(appConfiguration.getMethods())
                 .filter(method -> method.isAnnotationPresent(Bean.class))
                 .forEach(method -> {
                     Arrays.stream(method.getReturnType().getInterfaces()).forEach(iface -> beans.put(iface, method));
                     beans.put(method.getReturnType(), method);
                 });
+    }
+
+    private void scanComponents(String packageName) {
+        Reflections reflections = new Reflections(packageName);
+        Set<Class<?>> types = reflections.getTypesAnnotatedWith(Service.class);
+        types.addAll(reflections.getTypesAnnotatedWith(Repository.class));
+
+        types.forEach(type -> {
+            Arrays.stream(type.getInterfaces()).forEach(iface -> components.put(iface, type));
+            components.put(type, type);
+        });
     }
 
     @Override
@@ -90,11 +94,11 @@ public class ApplicationContextImpl implements ApplicationContext {
 
     private void injectDependencies(Object implementation) {
         Arrays.stream(implementation.getClass().getDeclaredFields())
-                .filter(field -> isDepedencyInjectionAnnotation(field))
+                .filter(field -> isDependencyInjectionAnnotation(field))
                 .forEach(field -> ClassUtil.setField(field, implementation, getBean(field.getType())));
     }
 
-    private boolean isDepedencyInjectionAnnotation(Field field) {
+    private boolean isDependencyInjectionAnnotation(Field field) {
         return field.isAnnotationPresent(Inject.class) || field.isAnnotationPresent(PersistenceContext.class);
     }
 
