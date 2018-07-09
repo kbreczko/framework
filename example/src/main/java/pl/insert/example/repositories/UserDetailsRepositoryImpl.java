@@ -1,8 +1,8 @@
 package pl.insert.example.repositories;
 
 import pl.insert.example.models.UserDetails;
-import pl.insert.framework.adnotations.Inject;
-import pl.insert.framework.adnotations.components.Repository;
+import pl.insert.framework.annotations.Inject;
+import pl.insert.framework.annotations.components.Repository;
 
 import javax.persistence.EntityManager;
 

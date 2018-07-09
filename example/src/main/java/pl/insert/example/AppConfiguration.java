@@ -1,7 +1,7 @@
 package pl.insert.example;
 
-import pl.insert.framework.adnotations.Bean;
-import pl.insert.framework.adnotations.ComponentScan;
+import pl.insert.framework.annotations.Bean;
+import pl.insert.framework.annotations.ComponentScan;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
