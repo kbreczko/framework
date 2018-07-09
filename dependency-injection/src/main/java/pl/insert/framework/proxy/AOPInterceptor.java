@@ -3,11 +3,11 @@ package pl.insert.framework.proxy;
 import java.lang.reflect.Method;
 
 public interface AOPInterceptor {
-    void before(Method method, Object[] args);
+    void before(Object target, Method method, Object[] args) throws NoSuchMethodException;
 
-    void after(Method method, Object[] args);
+    void after(Object target, Method method, Object[] args);
 
-    void afterThrowing(Method method, Object[] args, Throwable throwable);
+    void afterThrowing(Object target, Method method, Object[] args, Throwable throwable);
 
-    void afterFinally(Method method, Object[] args);
+    void afterFinally(Object target, Method method, Object[] args);
 }

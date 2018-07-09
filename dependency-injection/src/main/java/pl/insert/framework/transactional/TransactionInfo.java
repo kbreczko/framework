@@ -6,11 +6,13 @@ public class TransactionInfo {
     private final TransactionalAttribute transactionalAttribute;
     private final EntityManager entityManager;
     private final TransactionInfo oldTransactionInfo;
+    private final boolean newTransaction;
 
-    public TransactionInfo(TransactionalAttribute transactionalAttribute, EntityManager entityManager, TransactionInfo oldTransactionInfo) {
+    public TransactionInfo(TransactionalAttribute transactionalAttribute, EntityManager entityManager, TransactionInfo oldTransactionInfo, boolean newTransaction) {
         this.transactionalAttribute = transactionalAttribute;
         this.entityManager = entityManager;
         this.oldTransactionInfo = oldTransactionInfo;
+        this.newTransaction = newTransaction;
     }
 
     public TransactionalAttribute getTransactionalAttribute() {
@@ -31,5 +33,9 @@ public class TransactionInfo {
 
     public boolean isActiveTransaction(){
         return entityManager.getTransaction().isActive();
+    }
+
+    public boolean isNewTransaction() {
+        return newTransaction;
     }
 }

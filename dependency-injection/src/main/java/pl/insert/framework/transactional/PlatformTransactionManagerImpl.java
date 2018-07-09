@@ -1,15 +1,16 @@
 package pl.insert.framework.transactional;
 
+import pl.insert.framework.annotations.Inject;
+import pl.insert.framework.annotations.components.Component;
 import pl.insert.framework.entitymanager.EntityManagerUnit;
 
 import javax.persistence.EntityManager;
 
+@Component
 public class PlatformTransactionManagerImpl implements PlatformTransactionManager {
-    private final EntityManagerUnit entityManagerUnit;
 
-    public PlatformTransactionManagerImpl(EntityManagerUnit entityManagerUnit) {
-        this.entityManagerUnit = entityManagerUnit;
-    }
+    @Inject
+    private EntityManagerUnit entityManagerUnit;
 
     @Override
     public EntityManager newTransaction() {
@@ -35,7 +36,7 @@ public class PlatformTransactionManagerImpl implements PlatformTransactionManage
 
     @Override
     public void closeIfStillOpen(TransactionInfo transactionInfo) {
-        if (transactionInfo.isOpenTransaction())
+        if (transactionInfo.isOpenTransaction() && transactionInfo.isNewTransaction())
             transactionInfo.getEntityManager().close();
 
     }

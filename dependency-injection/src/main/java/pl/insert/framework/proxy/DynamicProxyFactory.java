@@ -1,7 +1,7 @@
 package pl.insert.framework.proxy;
 
-import java.util.function.Supplier;
+import java.lang.reflect.InvocationHandler;
 
 public interface DynamicProxyFactory {
-    <T> T createProxy(Class<T> clazz, Supplier<T> target, AOPInterceptor interceptor);
+    <T> T createProxy(Class<T> clazz, InvocationHandler handler);
 }

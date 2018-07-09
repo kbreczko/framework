@@ -1,20 +1,19 @@
 package pl.insert.framework.entitymanager;
 
-import pl.insert.framework.adnotations.components.Service;
+import pl.insert.framework.annotations.Inject;
+import pl.insert.framework.annotations.components.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.function.Supplier;
 
-@Service
+@Component
 public class EntityManagerUnitImpl implements Supplier<EntityManager>, EntityManagerUnit {
-
     private final ThreadLocal<EntityManager> entityManagerThreadLocal = new ThreadLocal<>();
+
+    @Inject
     private EntityManagerFactory entityManagerFactory;
 
-    public EntityManagerUnitImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
 
     @Override
     public EntityManager get() {

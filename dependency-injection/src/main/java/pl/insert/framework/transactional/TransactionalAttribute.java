@@ -7,4 +7,8 @@ public class TransactionalAttribute {
     public TransactionalAttribute(TransactionalPropagation transactionalPropagation) {
         this.transactionalPropagation = transactionalPropagation;
     }
+
+    public TransactionalPropagation getTransactionalPropagation() {
+        return transactionalPropagation;
+    }
 }
