@@ -5,8 +5,6 @@ import pl.insert.example.repositories.UserDetailsRepository;
 import pl.insert.framework.annotations.Inject;
 import pl.insert.framework.annotations.components.Service;
 import pl.insert.framework.annotations.transactional.Transactional;
-import pl.insert.framework.transactional.TransactionalPropagation;
-
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -16,7 +14,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Inject
     private InnerService innerService;
 
-    @Transactional(propagation = TransactionalPropagation.REQUIRED)
+    @Transactional
     public void save(UserDetails userDetails) {
         userDetailsRepository.save(userDetails);
         UserDetails newUserDetails = new UserDetails("bug");
@@ -25,12 +23,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
-
         newUserDetails = new UserDetails("afterException");
         userDetailsRepository.save(newUserDetails);
+        //throw new RuntimeException("Rollback this transaction!");
     }
 
-    @Transactional(propagation = TransactionalPropagation.REQUIRED)
+    @Transactional
     public UserDetails findById(long id) {
         return userDetailsRepository.findById(id);
     }

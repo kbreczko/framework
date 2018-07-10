@@ -24,7 +24,7 @@ public class TransactionalHandler implements InvocationHandler {
                 return returnValue;
             } catch (Throwable t) {
                 interceptor.afterThrowing(target, method, args, t);
-                throw t;
+                throw t.getCause();
             } finally {
                 interceptor.afterFinally(target, method, args);
             }
