@@ -26,6 +26,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             e.printStackTrace();
         }
 
+        newUserDetails = new UserDetails("afterException");
+        userDetailsRepository.save(newUserDetails);
     }
 
     @Transactional(propagation = TransactionalPropagation.REQUIRED)
