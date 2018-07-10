@@ -2,6 +2,7 @@ package pl.insert.framework.entitymanager;
 
 import pl.insert.framework.annotations.Inject;
 import pl.insert.framework.annotations.components.Component;
+import pl.insert.framework.exceptions.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,7 +14,6 @@ public class EntityManagerUnitImpl implements Supplier<EntityManager>, EntityMan
 
     @Inject
     private EntityManagerFactory entityManagerFactory;
-
 
     @Override
     public EntityManager get() {
@@ -39,7 +39,7 @@ public class EntityManagerUnitImpl implements Supplier<EntityManager>, EntityMan
 
     private EntityManagerFactory getEntityManagerFactory() {
         if (entityManagerFactory == null)
-            throw new NullPointerException("No bean named 'EntityManagerFactory' is defined");
+            throw new NoSuchBeanDefinitionException("No bean named 'EntityManagerFactory' is defined");
 
         return entityManagerFactory;
     }
