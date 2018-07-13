@@ -13,11 +13,6 @@ public class PlatformTransactionManagerImpl implements PlatformTransactionManage
     private EntityManagerUnit entityManagerUnit;
 
     @Override
-    public EntityManager newTransaction() {
-        return entityManagerUnit.createNewEntityManager();
-    }
-
-    @Override
     public void restoreTransaction(TransactionInfo transactionInfo) {
         entityManagerUnit.set(transactionInfo.getEntityManager());
     }
@@ -43,5 +38,25 @@ public class PlatformTransactionManagerImpl implements PlatformTransactionManage
     public void closeIfStillOpen(TransactionInfo transactionInfo) {
         if (transactionInfo.isOpenTransaction() && transactionInfo.isNewTransaction())
             transactionInfo.getEntityManager().close();
+    }
+
+    @Override
+    public TransactionInfo createTransactionInfo(TransactionalAttribute transactionalAttribute, TransactionInfo transactionInfo) {
+        if (isNewTransaction(transactionInfo, transactionalAttribute)) {
+            EntityManager entityManager = entityManagerUnit.createNewEntityManager();
+            return new TransactionInfo(transactionalAttribute, entityManager, transactionInfo, true);
+        }
+
+        return new TransactionInfo(transactionalAttribute, transactionInfo.getEntityManager(), transactionInfo, false);
+    }
+
+    private boolean isNewTransaction(TransactionInfo oldTransactionInfo, TransactionalAttribute transactionalAttribute) {
+        if (isRequiresNew(transactionalAttribute.getTransactionalPropagation()))
+            return true;
+        return oldTransactionInfo == null || !oldTransactionInfo.isOpenTransaction();
+    }
+
+    private boolean isRequiresNew(TransactionalPropagation propagation) {
+        return propagation.equals(TransactionalPropagation.REQUIRES_NEW);
     }
 }

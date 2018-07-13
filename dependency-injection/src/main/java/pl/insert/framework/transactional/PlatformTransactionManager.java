@@ -1,8 +1,6 @@
 package pl.insert.framework.transactional;
 
 
-import javax.persistence.EntityManager;
-
 public interface PlatformTransactionManager {
     void open(TransactionInfo transactionInfo);
 
@@ -12,7 +10,7 @@ public interface PlatformTransactionManager {
 
     void closeIfStillOpen(TransactionInfo transactionInfo);
 
-    EntityManager newTransaction();
+    TransactionInfo createTransactionInfo(TransactionalAttribute transactionalAttribute, TransactionInfo transactionInfo);
 
     void restoreTransaction(TransactionInfo transactionInfo);
 }
