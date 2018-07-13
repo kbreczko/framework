@@ -9,6 +9,7 @@ import pl.insert.framework.annotations.components.Component;
 import pl.insert.framework.annotations.components.Repository;
 import pl.insert.framework.annotations.components.Service;
 import pl.insert.framework.annotations.transactional.Transactional;
+import pl.insert.framework.beans.DisposableBean;
 import pl.insert.framework.entitymanager.EntityManagerHandler;
 import pl.insert.framework.entitymanager.EntityManagerUnit;
 import pl.insert.framework.entitymanager.EntityManagerUnitImpl;
@@ -35,8 +36,8 @@ public class ApplicationContextImpl implements ApplicationContext {
     }
     private Map<Class, Object> applicationScope = new HashMap<>();
     private Optional<Object> appConfiguration = Optional.empty();
-
     private Map<Class, Method> beans = new HashMap<>();
+    private List<DisposableBean> disposableBeans = new LinkedList<>();
 
     public ApplicationContextImpl() {
     }
@@ -69,6 +70,11 @@ public class ApplicationContextImpl implements ApplicationContext {
     }
 
     @Override
+    public void close() {
+        disposableBeans.forEach(DisposableBean::destroy);
+    }
+
+    @Override
     public synchronized <T> T getBean(Class<T> clazz) {
         if (applicationScope.containsKey(clazz))
             return (T) applicationScope.get(clazz);
@@ -89,6 +95,7 @@ public class ApplicationContextImpl implements ApplicationContext {
         addToApplicationScope(clazz, bean);
         return (T) bean;
     }
+
 
     private Object createProxy(Class<?> clazz, Object bean) {
         Object proxy = bean;
@@ -137,5 +144,8 @@ public class ApplicationContextImpl implements ApplicationContext {
     private void addToApplicationScope(Class<?> type, Object object) {
         Arrays.stream(object.getClass().getInterfaces()).forEach(iface -> applicationScope.put(iface, object));
         applicationScope.put(type, object);
+
+        if(object instanceof DisposableBean)
+            disposableBeans.add((DisposableBean) object);
     }
 }

@@ -5,8 +5,6 @@ import pl.insert.example.services.UserDetailsService;
 import pl.insert.framework.ApplicationContext;
 import pl.insert.framework.ApplicationContextImpl;
 
-import javax.persistence.EntityManagerFactory;
-
 
 public class Main {
 
@@ -15,7 +13,7 @@ public class Main {
         UserDetailsService userDetailsService = context.getBean(UserDetailsService.class);
         UserDetails userDetails = new UserDetails("Name");
         userDetailsService.save(userDetails);
-        context.getBean(EntityManagerFactory.class).close();
+        context.close();
     }
 
 }

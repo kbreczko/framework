@@ -5,10 +5,9 @@ import pl.insert.framework.annotations.components.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.function.Supplier;
 
 @Component
-public class EntityManagerUnitImpl implements Supplier<EntityManager>, EntityManagerUnit {
+public class EntityManagerUnitImpl implements EntityManagerUnit {
     private final ThreadLocal<EntityManager> entityManagerThreadLocal = new ThreadLocal<>();
 
     @Inject
@@ -35,6 +34,11 @@ public class EntityManagerUnitImpl implements Supplier<EntityManager>, EntityMan
         EntityManager entityManager = getEntityManagerFactory().createEntityManager();
         entityManagerThreadLocal.set(entityManager);
         return entityManager;
+    }
+
+    @Override
+    public void destroy() {
+        getEntityManagerFactory().close();
     }
 
     private EntityManagerFactory getEntityManagerFactory() {
