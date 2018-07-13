@@ -13,4 +13,6 @@ public interface PlatformTransactionManager {
     void closeIfStillOpen(TransactionInfo transactionInfo);
 
     EntityManager newTransaction();
+
+    void restoreTransaction(TransactionInfo transactionInfo);
 }

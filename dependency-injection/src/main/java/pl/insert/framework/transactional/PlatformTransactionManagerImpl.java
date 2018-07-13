@@ -18,6 +18,11 @@ public class PlatformTransactionManagerImpl implements PlatformTransactionManage
     }
 
     @Override
+    public void restoreTransaction(TransactionInfo transactionInfo) {
+        entityManagerUnit.set(transactionInfo.getEntityManager());
+    }
+
+    @Override
     public void open(TransactionInfo transactionInfo) {
         EntityManager entityManager = transactionInfo.getEntityManager();
         if (!entityManager.getTransaction().isActive())
@@ -38,6 +43,5 @@ public class PlatformTransactionManagerImpl implements PlatformTransactionManage
     public void closeIfStillOpen(TransactionInfo transactionInfo) {
         if (transactionInfo.isOpenTransaction() && transactionInfo.isNewTransaction())
             transactionInfo.getEntityManager().close();
-
     }
 }

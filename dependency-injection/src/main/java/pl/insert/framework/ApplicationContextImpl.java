@@ -13,6 +13,7 @@ import pl.insert.framework.beans.DisposableBean;
 import pl.insert.framework.entitymanager.EntityManagerHandler;
 import pl.insert.framework.entitymanager.EntityManagerUnit;
 import pl.insert.framework.entitymanager.EntityManagerUnitImpl;
+import pl.insert.framework.exceptions.*;
 import pl.insert.framework.proxy.DynamicProxyFactoryImpl;
 import pl.insert.framework.transactional.TransactionInterceptor;
 import pl.insert.framework.transactional.TransactionalHandler;
@@ -34,6 +35,7 @@ public class ApplicationContextImpl implements ApplicationContext {
         scanComponents(packageName);
         components.put(EntityManager.class, EntityManagerUnitImpl.class);
     }
+
     private Map<Class, Object> applicationScope = new HashMap<>();
     private Optional<Object> appConfiguration = Optional.empty();
     private Map<Class, Method> beans = new HashMap<>();
@@ -88,7 +90,7 @@ public class ApplicationContextImpl implements ApplicationContext {
         else if (components.containsKey(clazz) && appConfiguration.isPresent())
             implementationClass = Optional.of(createBeanFromComponents(clazz));
 
-        implementationClass.orElseThrow(() -> new NullPointerException("No bean named '" + clazz.getName() + "' is defined"));
+        implementationClass.orElseThrow(() -> new NoSuchBeanDefinitionException("No bean named '" + clazz.getName() + "' is defined"));
         Object bean = implementationClass.get();
         injectDependencies(bean);
         bean = createProxy(clazz, bean);
@@ -109,11 +111,11 @@ public class ApplicationContextImpl implements ApplicationContext {
     }
 
     private boolean isTransactional(Object object) {
-        boolean cLassTransactional = object.getClass().isAnnotationPresent(Transactional.class);
+        boolean classTransactional = object.getClass().isAnnotationPresent(Transactional.class);
         boolean methodsTransactional = Arrays.stream(object.getClass().getMethods())
                 .anyMatch(method -> method.isAnnotationPresent(Transactional.class));
 
-        return cLassTransactional || methodsTransactional;
+        return classTransactional || methodsTransactional;
     }
 
     private Object createEntityManagerBean() {
