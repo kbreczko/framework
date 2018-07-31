@@ -17,19 +17,21 @@ Ograniczenia:
 
 Tworzenie beana:
 - Wyszukiwanie - jeśli bean został wcześniej stworzony to zwracana jest instancja utworzonego obiektu
-- Instancjonowanie – znajduje definicję beanu i instancjonuje bean (@Bean, @Repository, @Service)
-- Wypełnianie właściwości – używając wstrzykiwania zależności, uzupełnia wszystkie właściwości określone za pomocą @Inject (w przypadku braku zależności zgłasza wyjątek)
+- Instancjonowanie – znajduje definicję beanu i instancjonuje bean
+- Wypełnianie właściwości – używając wstrzykiwania zależności, uzupełnia wszystkie właściwości określone za pomocą @Inject (w przypadku braku beanu zgłasza wyjątek)
 - Opakowanie w proxy jeśli jest to potrzebne
 
+Kolejność wyboru typu wstrzykiwania:  
+- po typie konkretnej klasy
 
 ###### Adnotacje:
 
 |Adnotacja            |Użycie  |Opis                         												
 |---------------------|--------|---------------------------------------------------------------------------
 |`@Inject`		      |Pole    |Wstrzykiwanie instancji klasy implementującej dany interfejs/klase 		
-|`@Component`         |Klasa   |Framework wie, że z danej klasy musi utworzyć beana i wstrzyknąć zależności
-|`@Repository `       |Klasa   |Podobnie jak adnotacja `@Component`, stosowana dla repozytoriów
-|`@Service`           |Klasa   |Podobnie jak adnotacja `@Component`, stosowana dla serwisów   
+|`@Component`         |Klasa   |Bazowy stereotyp, oznacza, że na podstawie tej klasy będzie utworzony bean
+|`@Repository `       |Klasa   |Wskazuje że klasa pozwala na dostęp do danych
+|`@Service`           |Klasa   |Stereotyp który wskazuje, że ta klasa jest serwisem   
 |`@Bean`              |Metoda  |Metoda opatrzona `@Bean` zwróci obiekt, który powinien być zarejestrowany jako `Bean` w kontekście aplikacji
 |`@PersistenceContext`|Pole    |Wstrzyknięcie proxy, który zapewnia dostarczenie aktualnego `entity manager`
 |`@Transactional`     |Metoda  |Metoda opatrzona `@Transactional` oznacza transakcje, którą zarządza menadżer transakcji
