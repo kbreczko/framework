@@ -17,15 +17,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public void save(UserDetails userDetails) {
         userDetailsRepository.save(userDetails);
-        UserDetails newUserDetails = new UserDetails("bug");
+
+        testPropagation(new UserDetails("bug"));
+        userDetailsRepository.save(new UserDetails("afterException"));
+        //throw new RuntimeException("Rollback this transaction!");
+    }
+
+    private void testPropagation(UserDetails userDetails) {
         try {
-            innerService.testPropagation(newUserDetails);
+            innerService.testPropagation(userDetails);
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
-        newUserDetails = new UserDetails("afterException");
-        userDetailsRepository.save(newUserDetails);
-        //throw new RuntimeException("Rollback this transaction!");
     }
 
     @Transactional
