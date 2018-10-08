@@ -2,7 +2,7 @@ package pl.insert.framework.transactional;
 
 import javax.persistence.EntityManager;
 
-public class TransactionInfo {
+public final class TransactionInfo {
     private final TransactionalAttribute transactionalAttribute;
     private final EntityManager entityManager;
     private final TransactionInfo oldTransactionInfo;

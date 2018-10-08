@@ -1,16 +1,19 @@
 package pl.insert.framework.transactional;
 
-import pl.insert.framework.annotations.Inject;
-import pl.insert.framework.annotations.components.Component;
 import pl.insert.framework.entitymanager.EntityManagerUnit;
+import pl.insert.framework.transactional.enums.Propagation;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
-@Component
+
 public class PlatformTransactionManagerImpl implements PlatformTransactionManager {
+    private final EntityManagerUnit entityManagerUnit;
+    private final List<Propagation> propagationWithNewTransaction = List.of(Propagation.REQUIRES_NEW);
 
-    @Inject
-    private EntityManagerUnit entityManagerUnit;
+    public PlatformTransactionManagerImpl(EntityManagerUnit entityManagerUnit) {
+        this.entityManagerUnit = entityManagerUnit;
+    }
 
     @Override
     public void restoreTransaction(TransactionInfo transactionInfo) {
@@ -51,12 +54,10 @@ public class PlatformTransactionManagerImpl implements PlatformTransactionManage
     }
 
     private boolean isNewTransaction(TransactionInfo oldTransactionInfo, TransactionalAttribute transactionalAttribute) {
-        if (isRequiresNew(transactionalAttribute.getTransactionalPropagation()))
+        Propagation propagation = transactionalAttribute.getPropagation();
+        if (propagationWithNewTransaction.stream().anyMatch(propagation::equals))
             return true;
-        return oldTransactionInfo == null || !oldTransactionInfo.isOpenTransaction();
-    }
 
-    private boolean isRequiresNew(TransactionalPropagation propagation) {
-        return propagation.equals(TransactionalPropagation.REQUIRES_NEW);
+        return oldTransactionInfo == null || !oldTransactionInfo.isOpenTransaction();
     }
 }

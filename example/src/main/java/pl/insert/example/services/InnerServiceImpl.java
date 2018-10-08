@@ -13,7 +13,7 @@ public class InnerServiceImpl implements InnerService {
     @Inject
     private UserDetailsRepository userDetailsRepository;
 
-    @Transactional(propagation = Propagation.REQUIRED.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void testPropagation(UserDetails userDetails) {
         userDetailsRepository.save(userDetails);

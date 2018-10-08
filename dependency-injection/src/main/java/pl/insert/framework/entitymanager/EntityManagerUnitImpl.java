@@ -1,18 +1,17 @@
 package pl.insert.framework.entitymanager;
 
-import pl.insert.framework.annotations.Inject;
-import pl.insert.framework.annotations.components.Component;
-import pl.insert.framework.exceptions.*;
+import pl.insert.framework.exceptions.NoSuchBeanDefinitionException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-@Component
 public class EntityManagerUnitImpl implements EntityManagerUnit {
     private final ThreadLocal<EntityManager> entityManagerThreadLocal = new ThreadLocal<>();
+    private final EntityManagerFactory entityManagerFactory;
 
-    @Inject
-    private EntityManagerFactory entityManagerFactory;
+    public EntityManagerUnitImpl(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+    }
 
     @Override
     public EntityManager get() {

@@ -1,8 +1,8 @@
-package pl.insert.framework.proxy;
+package pl.insert.framework.transactional;
 
 import java.lang.reflect.Method;
 
-public interface AOPInterceptor {
+public interface TransactionalInterceptor {
     void before(Object target, Method method, Object[] args) throws NoSuchMethodException;
 
     void after(Object target, Method method, Object[] args);

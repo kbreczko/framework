@@ -1,19 +1,17 @@
 package pl.insert.framework.transactional;
 
-import pl.insert.framework.annotations.Inject;
-import pl.insert.framework.annotations.components.Component;
 import pl.insert.framework.annotations.transactional.Transactional;
-import pl.insert.framework.proxy.AOPInterceptor;
+import pl.insert.framework.transactional.enums.Propagation;
 
 import java.lang.reflect.Method;
 
-
-@Component
-public class TransactionInterceptor implements AOPInterceptor {
+public class TransactionalInterceptorImpl implements TransactionalInterceptor {
     private final ThreadLocal<TransactionInfo> transactionInfoThreadLocal = new ThreadLocal<>();
+    private final PlatformTransactionManager platformTransactionManager;
 
-    @Inject
-    private PlatformTransactionManager platformTransactionManager;
+    public TransactionalInterceptorImpl(PlatformTransactionManager platformTransactionManager) {
+        this.platformTransactionManager = platformTransactionManager;
+    }
 
     @Override
     public void before(Object target, Method method, Object[] args) throws NoSuchMethodException {
@@ -25,7 +23,7 @@ public class TransactionInterceptor implements AOPInterceptor {
 
     private TransactionalAttribute createTransactionalAttribute(Object target, Method method) throws NoSuchMethodException {
         Transactional annotation = target.getClass().getMethod(method.getName(), method.getParameterTypes()).getAnnotation(Transactional.class);
-        TransactionalPropagation propagation = annotation.propagation();
+        Propagation propagation = annotation.propagation();
         return new TransactionalAttribute(propagation);
     }
 

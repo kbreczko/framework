@@ -1,14 +1,16 @@
 package pl.insert.framework.transactional;
 
 
-public class TransactionalAttribute {
-    private final TransactionalPropagation transactionalPropagation;
+import pl.insert.framework.transactional.enums.Propagation;
 
-    public TransactionalAttribute(TransactionalPropagation transactionalPropagation) {
-        this.transactionalPropagation = transactionalPropagation;
+public final class TransactionalAttribute {
+    private final Propagation propagation;
+
+    public TransactionalAttribute(Propagation propagation) {
+        this.propagation = propagation;
     }
 
-    public TransactionalPropagation getTransactionalPropagation() {
-        return transactionalPropagation;
+    public Propagation getPropagation() {
+        return propagation;
     }
 }

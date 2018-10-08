@@ -1,20 +1,20 @@
 package pl.insert.framework.transactional;
 
 import pl.insert.framework.annotations.transactional.Transactional;
-import pl.insert.framework.proxy.AOPInterceptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 public class TransactionalHandler implements InvocationHandler {
     private Object target;
-    private AOPInterceptor interceptor;
+    private TransactionalInterceptor interceptor;
 
-    public TransactionalHandler(Object target, AOPInterceptor interceptor) {
+    public TransactionalHandler(Object target, TransactionalInterceptor interceptor) {
         this.target = target;
         this.interceptor = interceptor;
     }
 
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (isTransactional(method)) {
             try {
