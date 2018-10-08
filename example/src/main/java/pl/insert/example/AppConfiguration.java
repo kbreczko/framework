@@ -8,12 +8,11 @@ import javax.persistence.Persistence;
 
 @ComponentScan("pl.insert")
 public class AppConfiguration {
-    private static final String persistanceUnitName = "database";
-    private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(persistanceUnitName);
+    private final static String persistenceUnitName = "database";
 
     @Bean
     public EntityManagerFactory entityManagerFactory() {
-        return entityManagerFactory;
+        return Persistence.createEntityManagerFactory(persistenceUnitName);
     }
 
 }
