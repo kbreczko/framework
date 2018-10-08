@@ -3,36 +3,45 @@ package pl.insert.framework.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 public class ClassUtil {
-    public static Object invokeMethod(Object object, Method method) {
+    public static Optional invokeMethod(Object object, Method method) {
         try {
-            return method.invoke(object);
+            return Optional.ofNullable(method.invoke(object));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return Optional.empty();
     }
 
-    public static <T> Object newInstance(Class<T> clazz) {
+    public static Optional newInstance(Class<?> clazz) {
         try {
-            return clazz.getDeclaredConstructor().newInstance();
+            return Optional.of(clazz.getDeclaredConstructor().newInstance());
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return Optional.empty();
     }
 
-
-    public static <T> void setField(Field field, Object obj, T value) {
+    public static void setField(Field field, Object obj, Object value) {
         field.setAccessible(true);
         try {
-            field.setAccessible(true);
             field.set(obj, value);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Optional<Class<?>> forName(String name){
+        try {
+            return Optional.of(Class.forName(name));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
     }
 }
