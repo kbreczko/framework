@@ -1,4 +1,4 @@
-package pl.insert.framework.transactional;
+package pl.insert.framework.transactional.models;
 
 
 import pl.insert.framework.transactional.enums.Propagation;

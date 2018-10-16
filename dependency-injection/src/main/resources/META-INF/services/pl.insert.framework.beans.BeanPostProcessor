@@ -1,0 +1,2 @@
+pl.insert.framework.transactional.TransactionalPostProcessor
+pl.insert.framework.transactional.entitymanager.EntityManagerPostProcessor

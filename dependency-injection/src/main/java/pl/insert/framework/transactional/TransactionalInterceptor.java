@@ -1,8 +1,10 @@
 package pl.insert.framework.transactional;
 
+import pl.insert.framework.beans.BeanFactoryAware;
+
 import java.lang.reflect.Method;
 
-public interface TransactionalInterceptor {
+public interface TransactionalInterceptor extends BeanFactoryAware {
     void before(Object target, Method method, Object[] args) throws NoSuchMethodException;
 
     void after(Object target, Method method, Object[] args);

@@ -1,6 +1,7 @@
 package pl.insert.framework.transactional;
 
 import pl.insert.framework.annotations.transactional.Transactional;
+import pl.insert.framework.transactional.utils.AnnotationUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -16,7 +17,7 @@ public class TransactionalHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (isTransactional(method)) {
+        if (AnnotationUtils.hasMethodWithAnnotation(target.getClass(), method, Transactional.class)) {
             try {
                 interceptor.before(target, method, args);
                 Object returnValue = method.invoke(target, args);
@@ -31,11 +32,5 @@ public class TransactionalHandler implements InvocationHandler {
         }
 
         return method.invoke(target, args);
-    }
-
-    private boolean isTransactional(Method method) throws NoSuchMethodException {
-        Class<?> clazz = target.getClass();
-        return clazz.isAnnotationPresent(Transactional.class)
-                || clazz.getMethod(method.getName(), method.getParameterTypes()).isAnnotationPresent(Transactional.class);
     }
 }

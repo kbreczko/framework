@@ -9,23 +9,17 @@ import pl.insert.framework.annotations.components.Service;
 import pl.insert.framework.beans.BeanDefinitionImpl;
 import pl.insert.framework.beans.BeanFactory;
 import pl.insert.framework.beans.BeanFactoryImpl;
-import pl.insert.framework.entitymanager.EntityManagerHandler;
-import pl.insert.framework.entitymanager.EntityManagerPostProcessor;
-import pl.insert.framework.entitymanager.EntityManagerUnit;
-import pl.insert.framework.entitymanager.EntityManagerUnitImpl;
-import pl.insert.framework.proxy.DynamicProxyFactory;
-import pl.insert.framework.transactional.*;
+import pl.insert.framework.beans.BeanPostProcessor;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ServiceLoader;
 
 
 public class AnnotationConfigApplicationContext extends AbstractApplicationContext implements ApplicationContext {
-    private List<Class<? extends Annotation>> componentAnnotations = List.of(Service.class, Repository.class, Component.class);
-    private BeanFactory beanFactory = new BeanFactoryImpl();
+    private final static List<Class<? extends Annotation>> componentAnnotations = List.of(Service.class, Repository.class, Component.class);
+    private final BeanFactory beanFactory = new BeanFactoryImpl();
     private final Object beanFactoryMonitor = new Object();
 
     public AnnotationConfigApplicationContext(Class<?> applicationConfiguration) {
@@ -38,20 +32,13 @@ public class AnnotationConfigApplicationContext extends AbstractApplicationConte
     }
 
     public AnnotationConfigApplicationContext() {
-        BeanDefinitionImpl beanDefinition = new BeanDefinitionImpl(() -> new EntityManagerUnitImpl(getBean(EntityManagerFactory.class)));
-        getBeanFactory().registerBean(EntityManagerUnit.class.getName(), beanDefinition);
+        loadBeanPostProcessor();
+    }
 
-        beanDefinition = new BeanDefinitionImpl(() -> DynamicProxyFactory.createProxy(EntityManager.class, new EntityManagerHandler(getBean(EntityManagerUnit.class))));
-        getBeanFactory().registerBean(EntityManager.class.getName(), beanDefinition);
-
-        beanDefinition = new BeanDefinitionImpl(() -> new PlatformTransactionManagerImpl(getBean(EntityManagerUnit.class)));
-        getBeanFactory().registerBean(PlatformTransactionManager.class.getName(), beanDefinition);
-
-        beanDefinition = new BeanDefinitionImpl(() -> new TransactionalInterceptorImpl(getBean(PlatformTransactionManager.class)));
-        getBeanFactory().registerBean(TransactionalInterceptor.class.getName(), beanDefinition);
-
-        getBeanFactory().registerBeanPostProcessor(new EntityManagerPostProcessor());
-        getBeanFactory().registerBeanPostProcessor(new TransactionalPostProcessor(() -> getBean(TransactionalInterceptor.class)));
+    private void loadBeanPostProcessor(){
+        ServiceLoader<BeanPostProcessor> beanPostProcessors = ServiceLoader.load(BeanPostProcessor.class);
+        beanPostProcessors.forEach(beanPostProcessor -> beanPostProcessor.setBeanFactory(beanFactory));
+        beanPostProcessors.forEach(beanFactory::registerBeanPostProcessor);
     }
 
     private void scanPackage(String packageName) {

@@ -1,12 +1,12 @@
 package pl.insert.framework.beans;
 
 import pl.insert.framework.annotations.Inject;
-import pl.insert.framework.annotations.PersistenceContext;
 import pl.insert.framework.exceptions.NoSuchBeanDefinitionException;
 import pl.insert.framework.exceptions.NoUniqueBeanDefinitionException;
 import pl.insert.framework.proxy.DynamicProxyFactory;
 import pl.insert.framework.util.ClassUtil;
 
+import javax.persistence.EntityManagerFactory;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class BeanFactoryImpl extends SingletonBeanRegistryImpl implements BeanFactory {
     private final Map<String, BeanDefinition> beanDefinitionMap = new HashMap<>();
     private final List<BeanPostProcessor> beanPostProcessors = new LinkedList<>();
-    private final List<Class<? extends Annotation>> dependencyInjectionAnnotations = List.of(Inject.class, PersistenceContext.class);
+    private final List<Class<? extends Annotation>> dependencyInjectionAnnotations = List.of(Inject.class);
 
     @Override
     public <T> T getBean(Class<T> requiredType) {
@@ -25,8 +25,10 @@ public class BeanFactoryImpl extends SingletonBeanRegistryImpl implements BeanFa
 
         T instance = createInstance(requiredType);
         registerSingleton(instance.getClass().getName(), instance);
-        if (instance instanceof DisposableBean)
+        if (instance instanceof DisposableBean )
             registerDisposableBean((DisposableBean) instance);
+        if (instance instanceof EntityManagerFactory)
+            registerDisposableBean(((EntityManagerFactory) instance)::close);
         return instance;
     }
 

@@ -1,50 +1,65 @@
 package pl.insert.framework.transactional;
 
 import pl.insert.framework.annotations.transactional.Transactional;
+import pl.insert.framework.beans.BeanFactory;
+import pl.insert.framework.beans.utils.BeansUtils;
 import pl.insert.framework.transactional.enums.Propagation;
+import pl.insert.framework.transactional.exceptions.TransactionException;
+import pl.insert.framework.transactional.models.TransactionInfo;
+import pl.insert.framework.transactional.models.TransactionalAttribute;
+import pl.insert.framework.transactional.utils.AnnotationUtils;
+import pl.insert.framework.util.Lazy;
 
 import java.lang.reflect.Method;
 
 public class TransactionalInterceptorImpl implements TransactionalInterceptor {
-    private final ThreadLocal<TransactionInfo> transactionInfoThreadLocal = new ThreadLocal<>();
-    private final PlatformTransactionManager platformTransactionManager;
-
-    public TransactionalInterceptorImpl(PlatformTransactionManager platformTransactionManager) {
-        this.platformTransactionManager = platformTransactionManager;
-    }
+    private static final ThreadLocal<TransactionInfo> transactionInfoThreadLocal = new ThreadLocal<>();
+    private BeanFactory beanFactory;
+    private Lazy<TransactionManager> transactionManagerLazy = new Lazy<>(() -> BeansUtils.getBean(beanFactory, TransactionManager.class));
 
     @Override
-    public void before(Object target, Method method, Object[] args) throws NoSuchMethodException {
+    public void before(Object target, Method method, Object[] args) {
         TransactionalAttribute transactionalAttribute = createTransactionalAttribute(target, method);
-        TransactionInfo transactionInfo = platformTransactionManager.createTransactionInfo(transactionalAttribute, transactionInfoThreadLocal.get());
+        TransactionInfo oldTransactionInfo = transactionInfoThreadLocal.get();
+        TransactionInfo transactionInfo = transactionManagerLazy.getOrCompute().createTransactionInfo(transactionalAttribute, oldTransactionInfo);
         transactionInfoThreadLocal.set(transactionInfo);
-        platformTransactionManager.open(transactionInfoThreadLocal.get());
+        transactionManagerLazy.getOrCompute().open(transactionInfo);
     }
 
-    private TransactionalAttribute createTransactionalAttribute(Object target, Method method) throws NoSuchMethodException {
-        Transactional annotation = target.getClass().getMethod(method.getName(), method.getParameterTypes()).getAnnotation(Transactional.class);
-        Propagation propagation = annotation.propagation();
+    private TransactionalAttribute createTransactionalAttribute(Object target, Method method) {
+        Propagation propagation = null;
+        try {
+            propagation = AnnotationUtils.extractAnnotation(target.getClass(), method, Transactional.class).propagation();
+        } catch (NoSuchMethodException e) {
+            throw new TransactionException(e.getMessage());
+        }
+
         return new TransactionalAttribute(propagation);
     }
 
     @Override
     public void after(Object target, Method method, Object[] args) {
-        platformTransactionManager.commit(transactionInfoThreadLocal.get());
+        transactionManagerLazy.getOrCompute().commit(transactionInfoThreadLocal.get());
     }
 
     @Override
     public void afterThrowing(Object target, Method method, Object[] args, Throwable throwable) {
-        platformTransactionManager.rollBack(transactionInfoThreadLocal.get());
+        transactionManagerLazy.getOrCompute().rollBack(transactionInfoThreadLocal.get());
     }
 
     @Override
     public void afterFinally(Object target, Method method, Object[] args) {
         TransactionInfo transactionInfo = transactionInfoThreadLocal.get();
-
-        platformTransactionManager.closeIfStillOpen(transactionInfo);
+        transactionManagerLazy.getOrCompute().closeIfStillOpen(transactionInfo);
         transactionInfoThreadLocal.set(transactionInfo.getOldTransactionInfo());
 
-        if (transactionInfoThreadLocal.get() != null)
-            platformTransactionManager.restoreTransaction(transactionInfoThreadLocal.get());
+        if (transactionInfo.getOldTransactionInfo() != null)
+            transactionManagerLazy.getOrCompute().restoreTransaction(transactionInfo.getOldTransactionInfo());
+    }
+
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
     }
 }

@@ -1,7 +1,10 @@
 package pl.insert.framework.transactional;
 
 
-public interface PlatformTransactionManager {
+import pl.insert.framework.transactional.models.TransactionInfo;
+import pl.insert.framework.transactional.models.TransactionalAttribute;
+
+public interface TransactionManager {
     void open(TransactionInfo transactionInfo);
 
     void rollBack(TransactionInfo transactionInfo);
