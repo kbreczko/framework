@@ -1,14 +1,14 @@
 package pl.insert.example.repositories;
 
 import pl.insert.example.models.UserDetails;
-import pl.insert.framework.annotations.Inject;
+import pl.insert.framework.annotations.PersistenceContext;
 import pl.insert.framework.annotations.components.Repository;
 
 import javax.persistence.EntityManager;
 
 @Repository
 public class UserDetailsRepositoryImpl implements UserDetailsRepository {
-    @Inject
+    @PersistenceContext
     private EntityManager entityManager;
 
     public void save(UserDetails userDetails) {
