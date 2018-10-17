@@ -1,10 +1,10 @@
 package pl.insert.framework.transactional.entitymanager;
 
-import pl.insert.framework.annotations.PersistenceContext;
-import pl.insert.framework.beans.BeanFactory;
-import pl.insert.framework.beans.BeanPostProcessor;
-import pl.insert.framework.beans.utils.BeansUtils;
+import pl.insert.framework.di.beans.BeanFactory;
+import pl.insert.framework.di.beans.BeanPostProcessor;
+import pl.insert.framework.di.beans.utils.BeansUtils;
 import pl.insert.framework.proxy.DynamicProxyFactory;
+import pl.insert.framework.transactional.annotations.PersistenceContext;
 import pl.insert.framework.transactional.utils.AnnotationUtils;
 import pl.insert.framework.util.ClassUtil;
 

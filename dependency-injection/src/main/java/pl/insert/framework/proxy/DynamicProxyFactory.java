@@ -1,7 +1,7 @@
 package pl.insert.framework.proxy;
 
 
-import pl.insert.framework.beans.BeanPostProcessor;
+import pl.insert.framework.di.beans.BeanPostProcessor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;

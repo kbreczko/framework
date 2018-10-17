@@ -2,8 +2,8 @@ package pl.insert.example;
 
 import pl.insert.example.models.UserDetails;
 import pl.insert.example.services.UserDetailsService;
-import pl.insert.framework.context.AnnotationConfigApplicationContext;
-import pl.insert.framework.context.ApplicationContext;
+import pl.insert.framework.di.context.AnnotationConfigApplicationContext;
+import pl.insert.framework.di.context.ApplicationContext;
 
 
 public class Main {

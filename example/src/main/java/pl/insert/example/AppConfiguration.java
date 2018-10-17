@@ -1,7 +1,7 @@
 package pl.insert.example;
 
-import pl.insert.framework.annotations.Bean;
-import pl.insert.framework.annotations.ComponentScan;
+import pl.insert.framework.di.annotations.ComponentScan;
+import pl.insert.framework.di.beans.annotations.Bean;
 import pl.insert.framework.transactional.TransactionManager;
 import pl.insert.framework.transactional.TransactionManagerImpl;
 

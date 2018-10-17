@@ -1,8 +1,8 @@
 package pl.insert.example.repositories;
 
 import pl.insert.example.models.UserDetails;
-import pl.insert.framework.annotations.PersistenceContext;
-import pl.insert.framework.annotations.components.Repository;
+import pl.insert.framework.di.annotations.stereotypes.Repository;
+import pl.insert.framework.transactional.annotations.PersistenceContext;
 
 import javax.persistence.EntityManager;
 

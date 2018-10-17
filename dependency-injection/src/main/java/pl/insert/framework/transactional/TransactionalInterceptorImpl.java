@@ -1,8 +1,8 @@
 package pl.insert.framework.transactional;
 
-import pl.insert.framework.annotations.transactional.Transactional;
-import pl.insert.framework.beans.BeanFactory;
-import pl.insert.framework.beans.utils.BeansUtils;
+import pl.insert.framework.di.beans.BeanFactory;
+import pl.insert.framework.di.beans.utils.BeansUtils;
+import pl.insert.framework.transactional.annotations.Transactional;
 import pl.insert.framework.transactional.enums.Propagation;
 import pl.insert.framework.transactional.exceptions.TransactionException;
 import pl.insert.framework.transactional.models.TransactionInfo;
@@ -27,7 +27,7 @@ public class TransactionalInterceptorImpl implements TransactionalInterceptor {
     }
 
     private TransactionalAttribute createTransactionalAttribute(Object target, Method method) {
-        Propagation propagation = null;
+        Propagation propagation;
         try {
             propagation = AnnotationUtils.extractAnnotation(target.getClass(), method, Transactional.class).propagation();
         } catch (NoSuchMethodException e) {

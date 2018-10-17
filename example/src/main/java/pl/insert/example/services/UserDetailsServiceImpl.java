@@ -2,9 +2,9 @@ package pl.insert.example.services;
 
 import pl.insert.example.models.UserDetails;
 import pl.insert.example.repositories.UserDetailsRepository;
-import pl.insert.framework.annotations.Inject;
-import pl.insert.framework.annotations.components.Service;
-import pl.insert.framework.annotations.transactional.Transactional;
+import pl.insert.framework.di.annotations.Inject;
+import pl.insert.framework.di.annotations.stereotypes.Service;
+import pl.insert.framework.transactional.annotations.Transactional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

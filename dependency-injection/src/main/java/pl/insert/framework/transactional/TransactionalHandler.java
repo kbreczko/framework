@@ -1,6 +1,6 @@
 package pl.insert.framework.transactional;
 
-import pl.insert.framework.annotations.transactional.Transactional;
+import pl.insert.framework.transactional.annotations.Transactional;
 import pl.insert.framework.transactional.utils.AnnotationUtils;
 
 import java.lang.reflect.InvocationHandler;

@@ -1,9 +1,9 @@
 package pl.insert.framework.transactional;
 
-import pl.insert.framework.annotations.transactional.Transactional;
-import pl.insert.framework.beans.BeanFactory;
-import pl.insert.framework.beans.BeanPostProcessor;
+import pl.insert.framework.di.beans.BeanFactory;
+import pl.insert.framework.di.beans.BeanPostProcessor;
 import pl.insert.framework.proxy.DynamicProxyFactory;
+import pl.insert.framework.transactional.annotations.Transactional;
 import pl.insert.framework.transactional.utils.AnnotationUtils;
 
 
