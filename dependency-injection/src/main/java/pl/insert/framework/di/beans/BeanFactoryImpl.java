@@ -3,8 +3,7 @@ package pl.insert.framework.di.beans;
 import pl.insert.framework.di.annotations.Inject;
 import pl.insert.framework.di.exceptions.NoSuchBeanDefinitionException;
 import pl.insert.framework.di.exceptions.NoUniqueBeanDefinitionException;
-import pl.insert.framework.proxy.DynamicProxyFactory;
-import pl.insert.framework.util.ClassUtil;
+import pl.insert.framework.root.util.ClassUtil;
 
 import javax.persistence.EntityManagerFactory;
 import java.lang.annotation.Annotation;
@@ -51,7 +50,7 @@ public class BeanFactoryImpl extends SingletonBeanRegistryImpl implements BeanFa
         BeanDefinition beanDefinition = getBeanDefinition(requiredType);
         T instance = (T) beanDefinition.createObject();
         resolveDependencies(instance);
-        return DynamicProxyFactory.createProxy(instance, requiredType, beanPostProcessors);
+        return createProxyFromBeanPostProcessors(instance, requiredType);
     }
 
     private <T> BeanDefinition getBeanDefinition(Class<T> requiredType) {
@@ -75,5 +74,13 @@ public class BeanFactoryImpl extends SingletonBeanRegistryImpl implements BeanFa
         Arrays.stream(declaredFields)
             .filter(field -> dependencyInjectionAnnotations.stream().anyMatch(field::isAnnotationPresent))
             .forEach(field -> ClassUtil.setField(field, instance, getBean(field.getType())));
+    }
+
+    private <T> T createProxyFromBeanPostProcessors(T instance, Class<T> requiredType){
+        T proxyObject = instance;
+        for (BeanPostProcessor beanPostProcessor : beanPostProcessors)
+            proxyObject = beanPostProcessor.postProcess(proxyObject, requiredType.getName());
+
+        return proxyObject;
     }
 }

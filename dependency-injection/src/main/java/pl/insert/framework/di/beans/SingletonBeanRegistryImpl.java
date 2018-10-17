@@ -1,7 +1,7 @@
 package pl.insert.framework.di.beans;
 
 import pl.insert.framework.di.exceptions.NoUniqueBeanDefinitionException;
-import pl.insert.framework.util.ClassUtil;
+import pl.insert.framework.root.util.ClassUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;

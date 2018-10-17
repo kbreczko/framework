@@ -1,6 +1,6 @@
 package pl.insert.framework.di.beans;
 
-import pl.insert.framework.util.ClassUtil;
+import pl.insert.framework.root.util.ClassUtil;
 
 import java.lang.reflect.Method;
 import java.util.function.Supplier;

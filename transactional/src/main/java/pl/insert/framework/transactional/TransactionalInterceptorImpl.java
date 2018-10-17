@@ -2,13 +2,13 @@ package pl.insert.framework.transactional;
 
 import pl.insert.framework.di.beans.BeanFactory;
 import pl.insert.framework.di.beans.utils.BeansUtils;
+import pl.insert.framework.root.util.Lazy;
 import pl.insert.framework.transactional.annotations.Transactional;
 import pl.insert.framework.transactional.enums.Propagation;
 import pl.insert.framework.transactional.exceptions.TransactionException;
 import pl.insert.framework.transactional.models.TransactionInfo;
 import pl.insert.framework.transactional.models.TransactionalAttribute;
 import pl.insert.framework.transactional.utils.AnnotationUtils;
-import pl.insert.framework.util.Lazy;
 
 import java.lang.reflect.Method;
 

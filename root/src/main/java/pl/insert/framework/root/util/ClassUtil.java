@@ -1,4 +1,4 @@
-package pl.insert.framework.util;
+package pl.insert.framework.root.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

@@ -11,6 +11,8 @@
     <modules>
         <module>example</module>
         <module>dependency-injection</module>
+        <module>transactional</module>
+        <module>root</module>
     </modules>
 
     <dependencies>

@@ -6,6 +6,7 @@ import pl.insert.framework.di.annotations.Inject;
 import pl.insert.framework.di.annotations.stereotypes.Service;
 import pl.insert.framework.transactional.annotations.Transactional;
 
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Inject

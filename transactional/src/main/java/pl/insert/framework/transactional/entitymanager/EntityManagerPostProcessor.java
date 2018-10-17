@@ -3,10 +3,10 @@ package pl.insert.framework.transactional.entitymanager;
 import pl.insert.framework.di.beans.BeanFactory;
 import pl.insert.framework.di.beans.BeanPostProcessor;
 import pl.insert.framework.di.beans.utils.BeansUtils;
-import pl.insert.framework.proxy.DynamicProxyFactory;
+import pl.insert.framework.root.proxy.DynamicProxyFactory;
+import pl.insert.framework.root.util.ClassUtil;
 import pl.insert.framework.transactional.annotations.PersistenceContext;
 import pl.insert.framework.transactional.utils.AnnotationUtils;
-import pl.insert.framework.util.ClassUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
