@@ -1,4 +1,4 @@
-package pl.insert.framework.di.beans.utils;
+package pl.insert.framework.di.utils;
 
 import pl.insert.framework.di.beans.BeanFactory;
 import pl.insert.framework.di.exceptions.BeansException;

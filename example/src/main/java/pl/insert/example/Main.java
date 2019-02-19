@@ -1,5 +1,6 @@
 package pl.insert.example;
 
+import pl.insert.example.configurations.AppConfiguration;
 import pl.insert.example.models.UserDetails;
 import pl.insert.example.services.UserDetailsService;
 import pl.insert.framework.di.context.AnnotationConfigApplicationContext;

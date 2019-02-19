@@ -1,4 +1,4 @@
-package pl.insert.framework.di.beans;
+package pl.insert.framework.di.beans.config;
 
 public interface DisposableBean {
     void destroy();

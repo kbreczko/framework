@@ -1,4 +1,4 @@
-package pl.insert.framework.di.beans.annotations;
+package pl.insert.framework.di.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

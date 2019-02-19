@@ -1,6 +1,6 @@
 package pl.insert.framework.transactional;
 
-import pl.insert.framework.di.beans.BeanFactoryAware;
+import pl.insert.framework.di.beans.config.BeanFactoryAware;
 
 import java.lang.reflect.Method;
 

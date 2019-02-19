@@ -1,5 +1,7 @@
 package pl.insert.framework.di.beans;
 
+import pl.insert.framework.di.beans.config.DisposableBean;
+
 public interface SingletonBeanRegistry {
     void registerSingleton(String beanName, Object singletonObject);
 

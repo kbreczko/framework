@@ -1,15 +1,15 @@
 package pl.insert.framework.di.context;
 
 import org.reflections.Reflections;
+import pl.insert.framework.di.annotations.Bean;
 import pl.insert.framework.di.annotations.ComponentScan;
 import pl.insert.framework.di.annotations.stereotypes.Component;
 import pl.insert.framework.di.annotations.stereotypes.Repository;
 import pl.insert.framework.di.annotations.stereotypes.Service;
-import pl.insert.framework.di.beans.BeanDefinitionImpl;
 import pl.insert.framework.di.beans.BeanFactory;
 import pl.insert.framework.di.beans.BeanFactoryImpl;
-import pl.insert.framework.di.beans.BeanPostProcessor;
-import pl.insert.framework.di.beans.annotations.Bean;
+import pl.insert.framework.di.beans.config.BeanPostProcessor;
+import pl.insert.framework.di.support.BeanDefinitionImpl;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -19,8 +19,8 @@ import java.util.ServiceLoader;
 
 public class AnnotationConfigApplicationContext extends AbstractApplicationContext implements ApplicationContext {
     private final static List<Class<? extends Annotation>> componentAnnotations = List.of(Service.class, Repository.class, Component.class);
-    private final BeanFactory beanFactory = new BeanFactoryImpl();
-    private final Object beanFactoryMonitor = new Object();
+    private final BeanFactory beanFactory;
+    private final Object beanFactoryMonitor;
 
     public AnnotationConfigApplicationContext(Class<?> applicationConfiguration) {
         this();
@@ -32,6 +32,9 @@ public class AnnotationConfigApplicationContext extends AbstractApplicationConte
     }
 
     public AnnotationConfigApplicationContext() {
+        this.beanFactory = new BeanFactoryImpl();
+        this.beanFactoryMonitor = new Object();
+
         loadBeanPostProcessor();
     }
 

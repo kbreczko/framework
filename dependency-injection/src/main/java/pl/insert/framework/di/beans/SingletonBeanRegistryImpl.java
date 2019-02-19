@@ -1,5 +1,7 @@
 package pl.insert.framework.di.beans;
 
+import pl.insert.framework.di.beans.config.DisposableBean;
+import pl.insert.framework.di.exceptions.BeansException;
 import pl.insert.framework.di.exceptions.NoUniqueBeanDefinitionException;
 import pl.insert.framework.root.util.ClassUtil;
 
@@ -19,10 +21,7 @@ public class SingletonBeanRegistryImpl implements SingletonBeanRegistry {
     @Override
     public <T> T getSingleton(String beanName) {
         List<Object> candidates = singletonObjects.entrySet().stream()
-            .filter(entry -> {
-                Stream<String> interfacesStream = Arrays.stream(ClassUtil.forName(entry.getKey()).get().getInterfaces()).map(Class::getName);
-                return beanName.equals(entry.getKey()) || interfacesStream.anyMatch(beanName::equals);
-            })
+            .filter(entry -> isImplementation(beanName, entry))
             .map(Map.Entry::getValue)
             .collect(Collectors.toList());
 
@@ -34,11 +33,14 @@ public class SingletonBeanRegistryImpl implements SingletonBeanRegistry {
 
     @Override
     public boolean containsSingleton(String beanName) {
-        return singletonObjects.entrySet().stream()
-            .anyMatch(entry -> {
-                Stream<String> interfacesStream = Arrays.stream(ClassUtil.forName(entry.getKey()).get().getInterfaces()).map(Class::getName);
-                return beanName.equals(entry.getKey()) || interfacesStream.anyMatch(beanName::equals);
-            });
+        return singletonObjects.entrySet().stream().anyMatch(entry -> isImplementation(beanName, entry));
+    }
+
+    private boolean isImplementation(String beanName, Map.Entry<String, Object> entry) {
+        Class<?> clazz = ClassUtil.forName(entry.getKey()).orElseThrow(() -> new BeansException("Class not found for:" + entry.getKey()));
+        Class<?>[] interfaces = clazz.getInterfaces();
+        Stream<String> interfacesStream = Arrays.stream(interfaces).map(Class::getName);
+        return beanName.equals(entry.getKey()) || interfacesStream.anyMatch(beanName::equals);
     }
 
     @Override

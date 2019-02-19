@@ -1,8 +1,8 @@
 package pl.insert.framework.transactional.entitymanager;
 
 import pl.insert.framework.di.beans.BeanFactory;
-import pl.insert.framework.di.beans.BeanPostProcessor;
-import pl.insert.framework.di.beans.utils.BeansUtils;
+import pl.insert.framework.di.beans.config.BeanPostProcessor;
+import pl.insert.framework.di.utils.BeansUtils;
 import pl.insert.framework.root.proxy.DynamicProxyFactory;
 import pl.insert.framework.root.util.ClassUtil;
 import pl.insert.framework.transactional.annotations.PersistenceContext;
