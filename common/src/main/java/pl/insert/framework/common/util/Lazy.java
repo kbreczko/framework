@@ -1,4 +1,4 @@
-package pl.insert.framework.root.util;
+package pl.insert.framework.common.util;
 
 import java.util.Optional;
 import java.util.function.Supplier;

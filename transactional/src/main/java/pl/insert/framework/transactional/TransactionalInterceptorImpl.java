@@ -1,8 +1,8 @@
 package pl.insert.framework.transactional;
 
+import pl.insert.framework.common.util.Lazy;
 import pl.insert.framework.di.beans.BeanFactory;
 import pl.insert.framework.di.utils.BeansUtils;
-import pl.insert.framework.root.util.Lazy;
 import pl.insert.framework.transactional.annotations.Transactional;
 import pl.insert.framework.transactional.enums.Propagation;
 import pl.insert.framework.transactional.exceptions.TransactionException;

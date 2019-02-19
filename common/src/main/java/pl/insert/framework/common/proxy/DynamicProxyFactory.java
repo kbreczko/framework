@@ -1,4 +1,4 @@
-package pl.insert.framework.root.proxy;
+package pl.insert.framework.common.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;

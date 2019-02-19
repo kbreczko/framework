@@ -1,9 +1,9 @@
 package pl.insert.framework.di.beans;
 
+import pl.insert.framework.common.util.ClassUtil;
 import pl.insert.framework.di.beans.config.DisposableBean;
 import pl.insert.framework.di.exceptions.BeansException;
 import pl.insert.framework.di.exceptions.NoUniqueBeanDefinitionException;
-import pl.insert.framework.root.util.ClassUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;

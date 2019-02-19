@@ -1,5 +1,6 @@
 package pl.insert.framework.di.beans;
 
+import pl.insert.framework.common.util.ClassUtil;
 import pl.insert.framework.di.annotations.Inject;
 import pl.insert.framework.di.beans.config.BeanPostProcessor;
 import pl.insert.framework.di.beans.config.DisposableBean;
@@ -7,7 +8,6 @@ import pl.insert.framework.di.exceptions.BeansException;
 import pl.insert.framework.di.exceptions.NoSuchBeanDefinitionException;
 import pl.insert.framework.di.exceptions.NoUniqueBeanDefinitionException;
 import pl.insert.framework.di.support.BeanDefinition;
-import pl.insert.framework.root.util.ClassUtil;
 
 import javax.persistence.EntityManagerFactory;
 import java.lang.annotation.Annotation;

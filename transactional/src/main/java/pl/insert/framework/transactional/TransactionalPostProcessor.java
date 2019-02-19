@@ -1,8 +1,8 @@
 package pl.insert.framework.transactional;
 
+import pl.insert.framework.common.proxy.DynamicProxyFactory;
 import pl.insert.framework.di.beans.BeanFactory;
 import pl.insert.framework.di.beans.config.BeanPostProcessor;
-import pl.insert.framework.root.proxy.DynamicProxyFactory;
 import pl.insert.framework.transactional.annotations.Transactional;
 import pl.insert.framework.transactional.utils.AnnotationUtils;
 
